@@ -1,3 +1,4 @@
+# Bibliotecas necessárias para o código
 import Adafruit_DHT as dht
 import RPi.GPIO as GPIO
 import paho.mqtt.client as mqtt
@@ -5,6 +6,7 @@ import requests
 import sys
 import time as t 
 
+# Configuração do raspiberry
 GPIO.setmode(GPIO.BOARD)
 led = 21
 pino_sensor = 25
