@@ -11,7 +11,6 @@ pino_sensor = 25
 
 # Configurações do ThingSpeak
 URL = 'https://api.thingspeak.com/update?api_key=HA6C0KPBFWKMZQJK&field1='
-URL2 = 'https://api.thingspeak.com/update?api_key=HA6C0KPBFWKMZQJK&field2='
 URL_twitter = 'https://api.thingspeak.com/apps/thingtweet/1/statuses/update'
 
 Broker = "test.mosquitto.org"
@@ -30,11 +29,11 @@ def on_message(client, userdata, msg):
 
 def ligar_led(codigo):
     if codigo == "b'1'":
-        GPIO.output(led, True)
-        print("LED ACESO!")
+        GPIO.output(led, HIGH)
+        print("BOMBA LIGADA!")
     elif codigo == "b'0'":
-        GPIO.output(led, False)
-        print("LED DESLIGADO!")
+        GPIO.output(led, LOW)
+        print("BOMBA DESLIGADA!")
 
 try:
     print("[STATUS] Inicializando MQTT...")
@@ -46,14 +45,13 @@ try:
 
     while True:
         temp, umid = dht.read_retry(dht.DHT11, pino_sensor)
-        print("Temp: {0:.1f} Umid:{1:.f}".format(temp, umid))
+        print("Temp: {0:.1f}".format(temp))
 
         requests.get(URL + str(temp))
-        requests.get(URL2 + str(umid))
 
-        if temp > 37:
+        if temp > 23:
             client.publish(TopicoSubscribe, "1")
-            # Tweet apenas se a temperatura for maior que 37
+            # Tweet apenas se a temperatura for maior que 23
             requests.post(URL_twitter, data={"api_key":"7BUK0GHQAAM4VY8X", "status":"Alerta: temperatura alta! Temperatura atual: {0:.1f}%".format(temp)})
         else:
             client.publish(TopicoSubscribe, "0")
